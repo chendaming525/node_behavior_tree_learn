@@ -1,0 +1,28 @@
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <Sequence name="MainTree">
+      <SubTree ID="EnterRoomPlan" result="{final_result}"/>
+      <SaySomething name="SayFinalResult" message="{final_result}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="EnterRoomPlan">
+    <Fallback name="EnterRoomFallback">
+      <Sequence name="plan_A">
+        <BatteryOK name="BatteryOK"/>
+        <DoorOpen name="DoorOpen"/>
+        <EnterRoom name="EnterRoom_A"/>
+      </Sequence>
+
+      <Sequence name="plan_B">
+        <FindKey name="FindKey"/>
+        <Retry name="RetryOpen" num_attempts="3">
+          <FlakyOpenDoor name="OpenDoor" failures_before_success="2"/>
+        </Retry>
+        <Sleep name="WaitAfterOpen" ticks="2"/>
+        <EnterRoom name="EnterRoom_B"/>
+        <SetBlackboard name="SetResult" value="entered room via subtree" text="{result}"/>
+      </Sequence>
+    </Fallback>
+  </BehaviorTree>
+</root>
